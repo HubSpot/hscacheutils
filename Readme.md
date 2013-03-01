@@ -12,9 +12,9 @@ Three main interfaces are provided:
 ```python
 from hscacheutils.generational_cache import gen_cache
 
-html = gen_cache.get(('nav', 'nav_portal:portal_id'), portal_id=1)
-gen_cache.set('<html>', ('nav', 'nav_portal:portal_id'), portal_id=1)
-gen_cache.invalidate(('nav', 'nav_portal:portal_id'), portal_id=1)
+html = gen_cache.get(('nav', 'nav_portal:user_id'), user_id=1)
+gen_cache.set('<html>', ('nav', 'nav_portal:user_id'), user_id=1)
+gen_cache.invalidate(('nav', 'nav_portal:user_id'), user_id=1)
 ```
 
 ## The `@gen_cache.wrap` decorator
@@ -26,23 +26,23 @@ It can be applied to function, method or classmethod. It is mostly similar to ge
 arguments in wrapped function. Eg.
 
 ```python
-@gen_cache.wrap('project_name', 'foo_per_portal_id:portal_id')
-def foobar(portal_id):
+@gen_cache.wrap('project_name', 'foo_per_user_id:user_id')
+def foobar(user_id):
     ...
 
-foobar(53)   # Uses 'project_name' and 'foo_per_portal_id:53' as generations
-foobar(999)  # Uses 'project_name' and 'foo_per_portal_id:999' as generations
+foobar(53)   # Uses 'project_name' and 'foo_per_user_id:53' as generations
+foobar(999)  # Uses 'project_name' and 'foo_per_user_id:999' as generations
 
 # So when invalidating like so...
-gen_cache.invalidate("for_per_portal_id:portal_id", portal_id=999)
+gen_cache.invalidate("for_per_user_id:user_id", user_id=999)
 
 foobar(53)   # This is still cached
 foobar(999)  # This has been invalidated
 ```
 
-So the when foobar is called the ':portal_id' part of the value-based generation looks for any
-argument named "portal_id", then takes its value to create a generation such as "for_per_portal_id:53".
-This means that the "for_per_portal_id" generation is only invalidated on a per-portal basis
+So the when foobar is called the ':user_id' part of the value-based generation looks for any
+argument named "user_id", then takes its value to create a generation such as "for_per_user_id:53".
+This means that the "for_per_user_id" generation is only invalidated on a per-portal basis
 
 
 ### Magic #2: All of the arguments (not used in value-based generations described above) are
@@ -100,24 +100,24 @@ ignore_locally=True (False by default) will disable this caching when ENV == 'lo
 
 ```python
 custom_cache = CustomUseGenCache([
-    'customgenz:portal_id',
+    'customgenz:user_id',
     'customgenz:blog_id'
 ])
 
 blog_id = 17
-portal_id = 123
+user_id = 123
 key = random.randint(1, 20000000)
 
-val = custom_cache.get(blog_id=blog_id, portal_id=123, cache_key=key)
-custom_cache.set(value=first_val, blog_id=blog_id, portal_id=123, cache_key=key)
-custom_cache.invalidate(portal_id=123)
-custom_cache.delete(blog_id=blog_id, portal_id=123, cache_key=key)
+val = custom_cache.get(blog_id=blog_id, user_id=123, cache_key=key)
+custom_cache.set(value=first_val, blog_id=blog_id, user_id=123, cache_key=key)
+custom_cache.invalidate(user_id=123)
+custom_cache.delete(blog_id=blog_id, user_id=123, cache_key=key)
 ```
 
 ## REAL CACHE KEY EXAMPLE
 
 
-    [cached]hsdjango.test.test_generational_cache.func_with_lots_of_args:369(['one','two']{'project':1336056824437339,'foobar':'NOThello','portal_id':42})
+    [cached]hsdjango.test.test_generational_cache.func_with_lots_of_args:369(['one','two']{'project':1336056824437339,'foobar':'NOThello','user_id':42})
         ^                        ^                          ^             ^        ^                   ^                                ^
         |                        |                          |             |        |                   |                                |
      prefix                 module name                 func name       line #     |   generation & current counter value               |
