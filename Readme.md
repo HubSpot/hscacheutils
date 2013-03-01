@@ -22,8 +22,9 @@ gen_cache.invalidate(('nav', 'nav_portal:user_id'), user_id=1)
 It can be applied to function, method or classmethod. It is mostly similar to gen_cache.get, but with some additional magic to make your life easier.
 
 
-### Magic #1: The contents of "value-based" generations are automatically pulled from the
-arguments in wrapped function. Eg.
+### Magic #1:
+
+The contents of "value-based" generations are automatically pulled from the arguments in wrapped function. Eg.
 
 ```python
 @gen_cache.wrap('project_name', 'foo_per_user_id:user_id')
@@ -45,8 +46,9 @@ argument named "user_id", then takes its value to create a generation such as "f
 This means that the "for_per_user_id" generation is only invalidated on a per-portal basis
 
 
-### Magic #2: All of the arguments (not used in value-based generations described above) are
-automatically appended to the cache key. Eg.
+### Magic #2:
+
+All of the arguments (not used in value-based generations described above) are automatically appended to the cache key. Eg.
 
 ```python
 @gen_cache.wrap('whatever')
@@ -71,7 +73,9 @@ If you don't what this behavior for one or more arguments, make sure to put the 
 argument(s) in the "exclude" option (see below).
 
 
-### Magic #3: The cache key will automatically include the current module name, function name, and
+### Magic #3:
+
+The cache key will automatically include the current module name, function name, and
 line number. So when this function moves to a different file, is renamed, or moves up or down a
 few lines, the cache will automatically be invalidated.
 
