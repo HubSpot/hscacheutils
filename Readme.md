@@ -94,6 +94,23 @@ log_misses=True (False by default) will print out some debugging into on every c
 
 ignore_locally=True (False by default) will disable this caching when ENV == 'local'
 
+### REAL `gen_cache.wraps` cache key example
+
+    [cached]hsdjango.test.test_generational_cache.func_with_lots_of_args:369(['one','two']{'project':1336056824437339,'foobar':'NOThello','user_id':42})
+        ^                        ^                          ^             ^        ^                   ^                                ^
+        |                        |                          |             |        |                   |                                |
+     prefix                 module name                 func name       line #     |   generation & current counter value               |
+                                                                                   |                                                    |
+                                                                       non-excluded positional args                         non-excluded keyword args
+
+
+
+
+Gotcha #1: Be careful to use either "self" or "cls" as the first argument name when wrapping
+methods and classmethods. This code relies on those names (see _func_type) to automatically
+chop off the first argument from the cache key.
+
+
 
 
 ## A `CustomUseGenCache` instance
@@ -114,22 +131,6 @@ custom_cache.invalidate(user_id=123)
 custom_cache.delete(blog_id=blog_id, user_id=123, cache_key=key)
 ```
 
-## REAL CACHE KEY EXAMPLE
 
-
-    [cached]hsdjango.test.test_generational_cache.func_with_lots_of_args:369(['one','two']{'project':1336056824437339,'foobar':'NOThello','user_id':42})
-        ^                        ^                          ^             ^        ^                   ^                                ^
-        |                        |                          |             |        |                   |                                |
-     prefix                 module name                 func name       line #     |   generation & current counter value               |
-                                                                                   |                                                    |
-                                                                       non-excluded positional args                         non-excluded keyword args
-
-
-
-
-Gotcha #1: Be careful to use either "self" or "cls" as the first argument name when wrapping
-methods and classmethods. This code relies on those names (see _func_type) to automatically
-chop off the first argument from the cache key.
-
-Note: based on (and built re-using) django-cache-utils.
+_Note: based on (and built re-using) django-cache-utils._
 
