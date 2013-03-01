@@ -51,7 +51,7 @@ class GenCachedBuilder(object):
         self.generations = generations
         self.exclude = set(exclude or [])
 
-        # Gather all the dynamic generational args (eg. "cms:portal_id")
+        # Gather all the dynamic generational args (eg. "cms:user_id")
         self.dynamic_gen_tuples = [parse_generation(gen) for gen in self.generations if ':' in gen]
 
         # Automatically exclude the dynamic generational paramaters from the rest of the cache key
@@ -127,7 +127,7 @@ def parse_generation(generation):
     Parses a generation, returning both the name and the dynamic parameter
     the generation is based on.
 
-    So parse_generation("nav:portal_id") => ("nav", "portal_id")
+    So parse_generation("nav:user_id") => ("nav", "user_id")
     and parse_generation("nav") => ("nav", None)
     """
     parts = generation.split(':')
@@ -253,11 +253,11 @@ class GenerationalCache(object):
 
     Usage:
 
-        from hsdjango.generational_cache import gen_cache
+        from hscacheutils.generational_cache import gen_cache
 
-        html = gen_cache.get(('nav', 'nav_portal:portal_id'), portal_id=1)
-        gen_cache.set('<html>', ('nav', 'nav_portal:portal_id'), portal_id=1)
-        gen_cache.invalidate(('nav', 'nav_portal:portal_id'), portal_id=1)
+        html = gen_cache.get(('nav', 'nav_portal:user_id'), user_id=1)
+        gen_cache.set('<html>', ('nav', 'nav_portal:user_id'), user_id=1)
+        gen_cache.invalidate(('nav', 'nav_portal:user_id'), user_id=1)
 
     """
     def build_key(self, *generations, **kwargs):
@@ -343,22 +343,22 @@ class GenerationalCache(object):
         Magic #1: The contents of "value-based" generations are automatically pulled from the
         arguments in wrapped function. Eg.
 
-            @gen_cache.wrap('project_name', 'foo_per_portal_id:portal_id')
-            def foobar(portal_id):
+            @gen_cache.wrap('project_name', 'foo_per_user_id:user_id')
+            def foobar(user_id):
                 ...
 
-            foobar(53)   -> Uses 'project_name' and 'foo_per_portal_id:53' as generations
-            foobar(999)  -> Uses 'project_name' and 'foo_per_portal_id:999' as generations
+            foobar(53)   -> Uses 'project_name' and 'foo_per_user_id:53' as generations
+            foobar(999)  -> Uses 'project_name' and 'foo_per_user_id:999' as generations
 
             # So when invalidating like so...
-            gen_cache.invalidate("for_per_portal_id:portal_id", portal_id=999)
+            gen_cache.invalidate("for_per_user_id:user_id", user_id=999)
 
             foobar(53)   -> This is still cached
             foobar(999)  -> This has been invalidated
 
-        So the when foobar is called the ':portal_id' part of the value-based generation looks for any
-        argument named "portal_id", then takes its value to create a generation such as "for_per_portal_id:53".
-        This means that the "for_per_portal_id" generation is only invalidated on a per-portal basis
+        So the when foobar is called the ':user_id' part of the value-based generation looks for any
+        argument named "user_id", then takes its value to create a generation such as "for_per_user_id:53".
+        This means that the "for_per_user_id" generation is only invalidated on a per-portal basis
 
 
         Magic #2: All of the arguments (not used in value-based generations described above) are
@@ -395,7 +395,7 @@ class GenerationalCache(object):
         ## REAL CACHE KEY EXAMPLE
 
 
-            [cached]hsdjango.test.test_generational_cache.func_with_lots_of_args:369(['one','two']{'project':1336056824437339,'foobar':'NOThello','portal_id':42})
+            [cached]hscacheutils.test.test_generational_cache.func_with_lots_of_args:369(['one','two']{'project':1336056824437339,'foobar':'NOThello','user_id':42})
                 ^                        ^                          ^             ^        ^                   ^                                ^
                 |                        |                          |             |        |                   |                                |
              prefix                 module name                 func name       line #     |   generation & current counter value               |
@@ -463,18 +463,18 @@ class CustomUseGenCache(object):
 
     my_gen_cache = CustomUseGenCache([
          "cos_templates",
-         "cos_template_portal_id:portal_id",
+         "cos_template_user_id:user_id",
          "cos_template_path:template_path"],
          timeout=500)
 
-    my_gen_cache.get(portal_id=123, template_path='my/path.html')
-    my_gen_cache.set(myvalue, portal_id=123, template_path='my/path.html')
-    my_gen_cache.invalidate('cos_template_portal_id:portal_id', portal_id=123)
+    my_gen_cache.get(user_id=123, template_path='my/path.html')
+    my_gen_cache.set(myvalue, user_id=123, template_path='my/path.html')
+    my_gen_cache.invalidate('cos_template_user_id:user_id', user_id=123)
     my_gen_cache.invalidate('cos_templates')
     
 
     @my_gen_cache.wrap()
-    def get_template(portal_id, path):
+    def get_template(user_id, path):
         pass
     '''
 
