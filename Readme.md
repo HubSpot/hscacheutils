@@ -3,8 +3,8 @@ A python implementation of [generational caching](http://www.regexprn.com/2011/0
 Three main interfaces are provided:
 
  - Direct methods `gen_cache.get`, `gen_cache.set`, `gen_cache.invalidate`, and `gen_cache.delete`
- - A function decorator `@gen_cache.wrap`
  - A `CustomUseGenCache` instance
+ - A function decorator `@gen_cache.wrap`
 
 
 ## Direct methods:
@@ -17,12 +17,33 @@ gen_cache.set('<html>', ('nav', 'nav_portal:user_id'), user_id=1)
 gen_cache.invalidate(('nav', 'nav_portal:user_id'), user_id=1)
 ```
 
+## A `CustomUseGenCache` instance
+
+The same as the direct methods, but creates an object so that you con't have to keep on passing in the generation names every single time.
+
+```python
+custom_cache = CustomUseGenCache([
+    'customgenz:user_id',
+    'customgenz:blog_id'
+])
+
+blog_id = 17
+user_id = 123
+key = random.randint(1, 20000000)
+
+val = custom_cache.get(blog_id=blog_id, user_id=123, cache_key=key)
+custom_cache.set(value=first_val, blog_id=blog_id, user_id=123, cache_key=key)
+custom_cache.invalidate(user_id=123)
+custom_cache.delete(blog_id=blog_id, user_id=123, cache_key=key)
+```
+
+
 ## The `@gen_cache.wrap` decorator
 
 It can be applied to function, method or classmethod. It is mostly similar to gen_cache.get, but with some additional magic to make your life easier.
 
 
-### Magic #1:
+### Magic #1: (true for all 3 interfaces)
 
 The contents of "value-based" generations are automatically pulled from the arguments in wrapped function. Eg.
 
@@ -46,7 +67,7 @@ argument named "user_id", then takes its value to create a generation such as "f
 This means that the "for_per_user_id" generation is only invalidated on a per-portal basis
 
 
-### Magic #2:
+### Magic #2: (true for all 3 interfaces)
 
 All of the arguments (not used in value-based generations described above) are automatically appended to the cache key. Eg.
 
@@ -73,7 +94,7 @@ If you don't what this behavior for one or more arguments, make sure to put the 
 argument(s) in the "exclude" option (see below).
 
 
-### Magic #3:
+### Magic #3: (only true for the decorator)
 
 The cache key will automatically include the current module name, function name, and
 line number. So when this function moves to a different file, is renamed, or moves up or down a
@@ -114,26 +135,6 @@ Gotcha #1: Be careful to use either "self" or "cls" as the first argument name w
 methods and classmethods. This code relies on those names (see _func_type) to automatically
 chop off the first argument from the cache key.
 
-
-
-
-## A `CustomUseGenCache` instance
-
-```python
-custom_cache = CustomUseGenCache([
-    'customgenz:user_id',
-    'customgenz:blog_id'
-])
-
-blog_id = 17
-user_id = 123
-key = random.randint(1, 20000000)
-
-val = custom_cache.get(blog_id=blog_id, user_id=123, cache_key=key)
-custom_cache.set(value=first_val, blog_id=blog_id, user_id=123, cache_key=key)
-custom_cache.invalidate(user_id=123)
-custom_cache.delete(blog_id=blog_id, user_id=123, cache_key=key)
-```
 
 
 _Note: based on (and built re-using) django-cache-utils._
