@@ -30,7 +30,7 @@ def get_many(keys):
 
     return result
 
-def incr(self, key, delta=1):
+def incr(key, delta=1):
     if not key in _cache_dict:
         _cache_dict[key] = 0
     _cache_dict[key] += delta

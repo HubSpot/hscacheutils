@@ -2,6 +2,7 @@ from time import time
 import random
 
 from nose.tools import ok_, eq_
+
 from django.conf import settings
 # In order to import bits of the Django test machinery, you either need the
 # env variable DJANGO_SETTINGS_MODULE, or to explicitly call

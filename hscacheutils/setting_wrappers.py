@@ -1,17 +1,21 @@
 # Basic settings helpers (we've overridden them for internal HubSpot usage)
 
-from django.conf import settings as dj_settings
+try:
+    from django.conf import settings as settings_obj
+except ImportError:
+    class SimpleSettings: pass
+    settings_obj = SimpleSettings()
 
 def get_setting(property):
     upper_p = property.upper()
-    return getattr(dj_settings, upper_p)
+    return getattr(settings_obj, upper_p)
 
 def get_setting_default(property, default_value):
     upper_p = property.upper()
-    return getattr(dj_settings, upper_p, default_value)
+    return getattr(settings_obj, upper_p, default_value)
 
 def _set_setting(property, value):
     """
     A for-tests only method to override a setting at runtime.
     """
-    setattr(dj_settings, property.upper(), value)
+    setattr(settings_obj, property.upper(), value)
