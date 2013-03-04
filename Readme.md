@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/HubSpot/hscacheutils.png?branch=master)](https://travis-ci.org/HubSpot/hscacheutils)
+
 A python implementation of [generational caching](http://www.regexprn.com/2011/06/web-application-caching-strategies_05.html).
 
 Three main interfaces are provided:
