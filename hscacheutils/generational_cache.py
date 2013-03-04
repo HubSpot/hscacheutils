@@ -4,9 +4,10 @@ import logging
 from time import time
 
 from django.utils.functional import wraps
+from django.utils.encoding import smart_str
+
 from cache_utils.utils import _cache_key, _func_info
 from cache_utils.utils import sanitize_memcached_key as orig_sanitize_memcached_key
-from django.utils.encoding import smart_str, smart_unicode
 
 from hscacheutils.raw_cache import cache as raw_cache, MAX_MEMCACHE_TIMEOUT
 
