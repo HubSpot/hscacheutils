@@ -16,7 +16,7 @@ try:
     from django.core.cache import get_cache
 except ImportError:
     get_cache = None
-    sys.stderr.write("Warning: error importing the django cache")
+    sys.stderr.write("Warning: error importing the django cache\n")
     from hscacheutils import simple_memory_cache
     
 # The maximum timeout to use if you want to cache values in memcache as long as possible.
