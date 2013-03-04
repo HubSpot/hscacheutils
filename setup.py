@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(name='hscacheutils',
   version='0.1.4',
   description="Some of Hubspot's python cache utils, namely generational caching",
-  long_description=open('README.md').read(),
+  long_description=open('Readme.md').read(),
   author='HubSpot Developer',
   author_email='devteam+hscacheutils@hubspot.com',
   url='http://dev.hubspot.com/',
