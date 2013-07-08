@@ -333,8 +333,8 @@ class GenerationalCache(object):
             val = c.incr(key)
             return val
         except ValueError:
-            return c.set(key, 1)
-    
+            return c.set(key, new_generation_value())
+
     def wrap(self, *generations, **kwargs):
         """
         Generational Caching decorator. Can be applied to function, method or classmethod. It is
