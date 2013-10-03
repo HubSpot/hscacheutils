@@ -11,7 +11,7 @@ setup(name='hscacheutils',
   packages=find_packages(),
   install_requires=[
     "python-memcached==1.47",
-    "Django==1.3",
+    "Django>=1.3,<1.4",
     "django-cache-utils==0.7",
   ],
   platforms=["any"],
