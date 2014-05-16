@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='hscacheutils',
-  version='0.1.7',
+  version='0.1.8',
   description="Some of Hubspot's python cache utils, namely generational caching",
   long_description=open('Readme.md').read(),
   author='HubSpot Developer',
@@ -11,7 +11,7 @@ setup(name='hscacheutils',
   packages=find_packages(),
   install_requires=[
     "python-memcached==1.47",
-    "Django>=1.3,<1.4",
+    "Django>=1.3,<1.7",
     "django-cache-utils==0.7",
   ],
   platforms=["any"],
